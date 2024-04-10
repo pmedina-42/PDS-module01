@@ -10,8 +10,6 @@ DB_NAME = env_vars['DB_NAME']
 DB_HOST = env_vars['DB_HOST']
 DB_PORT = env_vars['DB_PORT']
 
-csv_folder = 'customer'
-
 def insert_data_to_db():
     table_name = 'customers'
     conn = psycopg2.connect(
@@ -32,12 +30,27 @@ def insert_data_to_db():
             user_session text
         )
     """.format(table_name))
-
-    for csv_file in os.listdir(csv_folder):
-        if csv_file.endswith('.csv'):
-            with open(f"{csv_folder}/{csv_file}", 'r') as f:
-                next(f)
-                cursor.copy_from(f, table_name, sep=',')
+    print('Tabla customers creada. Insertando datos...')
+    cursor.execute("""
+        INSERT INTO {} SELECT * FROM data_2022_oct;
+    """.format(table_name))
+    print('Datos de la tabla data_2022_oct insertados...')
+    cursor.execute("""
+        INSERT INTO {} SELECT * FROM data_2022_nov;
+    """.format(table_name))
+    print('Datos de la tabla data_2022_nov insertados...')
+    cursor.execute("""
+        INSERT INTO {} SELECT * FROM data_2022_dec;
+    """.format(table_name))
+    print('Datos de la tabla data_2022_dec insertados...')
+    cursor.execute("""
+        INSERT INTO {} SELECT * FROM data_2023_jan;
+    """.format(table_name))
+    print('Datos de la tabla data_2023_jan insertados...')
+    cursor.execute("""
+        INSERT INTO {} SELECT * FROM data_2023_feb;
+    """.format(table_name))
+    print('Datos de la tabla data_2023_feb insertados...')
 
     conn.commit()
     cursor.close()
